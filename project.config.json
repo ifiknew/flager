@@ -1,8 +1,8 @@
 {
 	"miniprogramRoot": "dist/",
-	"projectname": "flager",
+	"projectname": "flag",
 	"description": "for flag",
-	"appid": "touristappid",
+	"appid": "wxbd6909022b1f69a4",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,

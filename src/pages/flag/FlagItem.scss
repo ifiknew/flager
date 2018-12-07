@@ -1,8 +1,5 @@
 .FlagItem {
-
-  &:focus {
-    background-color: #eee;
-  }
+  transition: all .3s;
   .body {
     display: flex;
     padding: 32px 40px;
@@ -11,26 +8,64 @@
       margin-right: 32px;
     }
     .right {
+      overflow-x: hidden;
       flex-grow: 1;
+
       .headline {
         display: flex;
-        justify-content: space-between;
         font-size: 32px;
-        color: rgb(126, 126, 126);
+        color: #333;
+        &.inline {
+          justify-content: space-between;
+        }
+        .info {
+          margin-left: 32px;
+          display: flex;
+          flex-direction: column;
+        }
         .time {
           font-size: 24px;
           align-self: flex-start;
-          color: #b9b9b9;
+          color: #666;
         }
       }
       .content {
         font-size: 28px;
         margin-top: 16px;
-        color: #ccc;
+        color: #666;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 56px;
+        .left {
+          display: flex;
+          align-items: center;
+          .iconWrapper {
+            margin-right: 32px;
+            font-size: 28px;
+            color: #d9d9d9;
+            display: flex;
+            align-items: center;
+            font-weight: 300;
+            at-icon {
+              margin-right: 4px;
+            }
+          }
+
+        }
+        .right {
+          display: flex;
+          align-items: center;
+          padding-top: 4px;
+          flex-grow: 0;
+        }
       }
     }
   }
   .footer {
+    display: flex;
     
   }
 

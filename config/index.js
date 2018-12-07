@@ -33,12 +33,6 @@ const config = {
   weapp: {
     module: {
       postcss: {
-        cssModules: {
-          enable: true, // 默认为 false，如需使用 css modules 功能，则设为 true
-          config: {
-            generateScopedName: '[name]__[local]___[hash:base64:5]'
-          }
-        },
         autoprefixer: {
           enable: true,
           config: {

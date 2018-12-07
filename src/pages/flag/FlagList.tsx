@@ -8,7 +8,8 @@ interface FlagListProps {
 
 class FlagList extends Component<FlagListProps> {
   state = {
-    clientHeight: 900
+    clientHeight: 900,
+    activeId: -1,
   }
   componentDidMount() {
     Taro.getSystemInfo({
@@ -21,6 +22,9 @@ class FlagList extends Component<FlagListProps> {
   }
   handleScrollToUpper = () => {
 
+  }
+  handleActivate = (id: number) => {
+    this.setState({ activeId: this.state.activeId !== id ? id : -1 })
   }
   render() {
     return (
@@ -35,7 +39,7 @@ class FlagList extends Component<FlagListProps> {
         onScrollToUpper={this.handleScrollToUpper}
       >
         {this.props.data.map(v => (
-          <FlagItem data={v} />
+          <FlagItem data={v} onClick={this.handleActivate}/>
         ))}
       </ScrollView>
     )

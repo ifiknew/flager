@@ -10,5 +10,13 @@ declare namespace App {
     userAvatar: string
 
     timestamp: number
+
+    taskList: Array<Task>
+  }
+
+  interface Task {
+    id: number
+    name: string
+    checked: boolean
   }
 }

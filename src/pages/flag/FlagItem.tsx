@@ -1,45 +1,97 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { AtAvatar } from 'taro-ui'
+import { AtAvatar, AtIcon, AtButton } from 'taro-ui'
 import './FlagItem.scss'
 interface FlagItemProps {
-  data: App.Flag
+  data: App.Flag,
+  disableNavigation?: boolean
+  disableInline?: boolean
 }
 
 class FlagItem extends Component<FlagItemProps> {
+  handleClick = () => {
+    if (this.props.disableNavigation !== true) {
+      Taro.navigateTo({
+        url: '/pages/flag/FlagPage'
+      })
+    }
 
+  }
   render() {
     const { data } = this.props
+    if (data == null) { return null }
     return (
       <View
         className='FlagItem'
+        onClick={this.handleClick}
+        style={this.props.disableInline ? { borderBottom: '8px solid #f7f7f7' } : {}}
       >
-        <View className="body">
-          <View className="left">
-            <AtAvatar circle image={data.userAvatar} size="small" />
-          </View>
-          <View className="right">
-            <View className="headline">
-              <Text>{data.userName}</Text>
-              <Text className="time">
-              {new Intl.DateTimeFormat(
-                'zh-CN', 
-                {
-                  month: '2-digit', day: '2-digit',
-                  hour: '2-digit', minute: '2-digit',
-                  hour12: false,
-                }
-              ).format(new Date(data.timestamp))}
-              </Text>
-            </View>
-            <View className="content">
-              <Text>{data.content}</Text>
-            </View>
-          </View>
-        </View>
-        <View className="footer">
+        {this.props.disableInline ? (
+          <View className="body">
+            <View className="right">
+              <View className="headline">
+                  <AtAvatar circle image={data.userAvatar} size="small" />
+                  <View className="info">
+                    <Text>{data.userName}</Text>
+                    <Text className="time">
+                    {new Intl.DateTimeFormat(
+                      'zh-CN', 
+                      {
+                        month: '2-digit', day: '2-digit',
+                        hour: '2-digit', minute: '2-digit',
+                        hour12: false,
+                      }
+                    ).format(new Date(data.timestamp))}
+                    </Text>
+                  </View>
+                
 
-        </View>
+              </View>
+              
+              <View className="content">
+                <Text>{data.content}</Text>
+              </View>
+
+              <View className="footer">
+                <View className="left">
+                  <View className="iconWrapper"><AtIcon value='heart-2' size='24' color='#eee' className="heartIcon"/><Text>点赞</Text></View>
+                  <View className="iconWrapper"><AtIcon value='star-2' size='24' color='#eee'/><Text>关注</Text></View>
+                </View>
+                <View className='right'>
+                  <AtButton type='secondary' size='small' >我要参与</AtButton>
+                </View>
+              </View>
+
+            </View>
+          </View>
+        ) : (
+          <View className="body">
+            <View className="left">
+              <AtAvatar circle image={data.userAvatar} size="small" />
+            </View>
+    
+            <View className="right">
+              <View className="headline inline">
+                <Text>{data.userName}</Text>
+                <Text className="time">
+                {new Intl.DateTimeFormat(
+                  'zh-CN', 
+                  {
+                    month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit',
+                    hour12: false,
+                  }
+                ).format(new Date(data.timestamp))}
+                </Text>
+              </View>
+              <View className="content">
+                <Text>{data.content.length > 100 ? data.content.slice(0, 100).trim() + '...' : data.content}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+
 
       </View>
     )

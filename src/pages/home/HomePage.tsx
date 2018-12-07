@@ -4,96 +4,25 @@ import { View } from '@tarojs/components'
 import { AtSearchBar, AtTabs, AtTabsPane } from 'taro-ui'
 import './HomePage.scss'
 import FlagList from '../flag/FlagList';
-const LIST:Array<App.Flag> = [
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
+import Mock from 'mockjs'
 
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
+const LIST:Array<App.Flag> = Mock.mock({
+  'list|5-50': [{
+    'id|+1': 1,
+    title: /[a-z ]{1,20}/,
+    content: /[a-z ]{1,200}/,
 
-    timestamp: new Date().valueOf(),
-  },
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
-
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
+    'userId|+1': 2,
+    userName: /[a-z ]{1,20}/,
+    userAvatar: '',
 
     timestamp: new Date().valueOf(),
-  },
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
-
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
-
-    timestamp: new Date().valueOf(),
-  },
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
-
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
-
-    timestamp: new Date().valueOf(),
-  },
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
-
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
-
-    timestamp: new Date().valueOf(),
-  },
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
-
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
-
-    timestamp: new Date().valueOf(),
-  },
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
-
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
-
-    timestamp: new Date().valueOf(),
-  },
-  {
-    id: 1,
-    title: '测试flag标题',
-    content: '测试flag内容',
-
-    userId: 1,
-    userName: '测试用户名',
-    userAvatar: '测试头像',
-
-    timestamp: new Date().valueOf(),
-  }
-]
+    'taskList|0-10': [{
+      name: /[a-z ]{1,20}/,
+      'checked|1': true
+    }]
+  }]
+}).list
 class HomePage extends Component {
   state = {
     searchKey: '',
