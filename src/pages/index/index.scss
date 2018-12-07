@@ -1,0 +1,21 @@
+view {
+  box-sizing: border-box;
+}
+page {
+  height: 100%;
+}
+.Index {
+  height: 100%;
+}
+.at-tabs__header {
+  text-align: left !important;
+  padding-left: 20px !important;
+}
+.at-tabs__underline {
+  display: none !important;
+  background-color: transparent !important;
+  z-index: 0 !important;
+}
+.at-search-bar::after {
+  border: none !important;
+}
