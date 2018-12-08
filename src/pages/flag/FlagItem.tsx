@@ -6,16 +6,22 @@ interface FlagItemProps {
   data: App.Flag,
   disableNavigation?: boolean
   disableInline?: boolean
+
+  active?: boolean
+  onClick?: (data: App.Flag) => void 
 }
 
 class FlagItem extends Component<FlagItemProps> {
   handleClick = () => {
-    if (this.props.disableNavigation !== true) {
-      Taro.navigateTo({
-        url: '/pages/flag/FlagPage'
-      })
+    if (this.props.onClick) {
+      this.props.onClick(this.props.data)
+    } else {
+      if (this.props.disableNavigation !== true) {
+        Taro.navigateTo({
+          url: '/pages/flag/FlagPage'
+        })
+      }
     }
-
   }
   render() {
     const { data } = this.props
@@ -24,7 +30,9 @@ class FlagItem extends Component<FlagItemProps> {
       <View
         className='FlagItem'
         onClick={this.handleClick}
-        style={this.props.disableInline ? { borderBottom: '8px solid #f7f7f7' } : {}}
+        style={this.props.disableInline ? { borderBottom: '8px solid #f7f7f7' } 
+        : this.props.active ? { borderBottom: '8px solid #f7f7f7', borderTop: '8px solid #f7f7f7' }
+        : {}}
       >
         {this.props.disableInline ? (
           <View className="body">
@@ -44,8 +52,6 @@ class FlagItem extends Component<FlagItemProps> {
                     ).format(new Date(data.timestamp))}
                     </Text>
                   </View>
-                
-
               </View>
               
               <View className="content">
@@ -85,7 +91,15 @@ class FlagItem extends Component<FlagItemProps> {
                 </Text>
               </View>
               <View className="content">
-                <Text>{data.content.length > 100 ? data.content.slice(0, 100).trim() + '...' : data.content}</Text>
+                <Text>{data.content.length > 100 && this.props.active != true ? data.content.slice(0, 100).trim() + '...' : data.content}</Text>
+              </View>
+              <View className="footer" style={{ maxHeight: this.props.active ? '999px' : '0 !important', overflow: 'hidden' }}>
+                <View className="left">
+                  <View className="iconWrapper"><AtIcon value='heart-2' size='24' color='#eee' className="heartIcon"/><Text>点赞</Text></View>
+                </View>
+                <View className='right'>
+                  <AtButton type='secondary' size='small' >删除</AtButton>
+                </View>
               </View>
             </View>
           </View>

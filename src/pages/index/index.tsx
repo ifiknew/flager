@@ -5,7 +5,7 @@ import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { add, minus, asyncAdd } from '../../actions/counter'
 
-import { AtTabBar, AtSearchBar, AtTabs, AtTabsPane } from 'taro-ui'
+import { AtAvatar, AtTabBar } from 'taro-ui'
 
 
 import './index.scss'
@@ -59,9 +59,17 @@ class Index extends Component {
 
   state = {
     current: 0,
-
+    avatar: '',
+    userName: '',
   }
-
+  componentDidMount() {
+    
+    
+    this.setState({
+      avatar: Taro.getStorageSync('avatarUrl'),
+      userName: Taro.getStorageSync('nickName'),
+    })
+  }
   componentWillReceiveProps (nextProps) {
     console.log(this.props, nextProps)
   }
@@ -83,7 +91,14 @@ class Index extends Component {
       <View className='Index'>
         {this.state.current === 0 ? (
           <HomePage />
-        ) : null}
+        ) : (
+          <View className="Profile">
+            <View className="header">
+              <AtAvatar image={this.state.avatar} circle size="large"/>
+              <View className="name">{this.state.userName}</View>
+            </View>
+          </View>
+        )}
         <AtTabBar
           fixed
           tabList={[

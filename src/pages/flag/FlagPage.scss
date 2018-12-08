@@ -1,4 +1,7 @@
-
+page,
+.FlagPage {
+  height: 100%;
+}
 
 .at-tabs__header {
   text-align: left !important;
@@ -25,6 +28,10 @@
       border-radius: 50%;
       margin-right: 16px;
       color: #fff;
+      at-icon {
+        position: relative;
+        top: -2px;
+      }
     }
     .name {
 
@@ -33,4 +40,24 @@
       flex: 0 0;
     }
   }
+}
+.AvatarGroup {
+  .item {
+    margin: 32px 48px;
+    display: flex;
+    align-items: center;
+  }
+  at-avatar {
+    margin-right: 20px;
+  }
+}
+.CommentGroup {
+  margin-bottom: 42px;
+}
+.CommentControl {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  at-search-bar at-icon { display: none; }
 }

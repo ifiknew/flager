@@ -19,3 +19,19 @@ page {
 .at-search-bar::after {
   border: none !important;
 }
+
+.Profile {
+  padding: 32px 56px;
+  .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    at-avatar {
+      margin-bottom: 60px;
+    }
+    .name {
+      font-size: 48px;
+    }
+  }
+}

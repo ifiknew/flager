@@ -23,9 +23,6 @@ class FlagList extends Component<FlagListProps> {
   handleScrollToUpper = () => {
 
   }
-  handleActivate = (id: number) => {
-    this.setState({ activeId: this.state.activeId !== id ? id : -1 })
-  }
   render() {
     return (
       <ScrollView
@@ -39,7 +36,7 @@ class FlagList extends Component<FlagListProps> {
         onScrollToUpper={this.handleScrollToUpper}
       >
         {this.props.data.map(v => (
-          <FlagItem data={v} onClick={this.handleActivate}/>
+          <FlagItem data={v} />
         ))}
       </ScrollView>
     )

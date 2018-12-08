@@ -7,7 +7,7 @@ import FlagList from '../flag/FlagList';
 import Mock from 'mockjs'
 
 const LIST:Array<App.Flag> = Mock.mock({
-  'list|5-50': [{
+  'list|1-10': [{
     'id|+1': 1,
     title: /[a-z ]{1,20}/,
     content: /[a-z ]{1,200}/,
