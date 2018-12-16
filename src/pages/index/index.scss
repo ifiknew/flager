@@ -35,3 +35,41 @@ page {
     }
   }
 }
+.addIconWrapper {
+  position: fixed;
+  right: 32px;
+  bottom: 128px;
+  border-radius: 50%;
+  background-color: #6190E8;
+  width: 96px;
+  height: 96px;
+  padding: 0;
+  min-width: 0;
+  box-shadow: 0px 9px 15px -3px rgba(0, 0, 0, 0.2), 0px 18px 30px 0px rgba(0, 0, 0, 0.14), 0px 3px 50px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:active {
+    background-color: #729cea;
+  }
+}
+
+
+.at-input__children::after {
+  border: none !important;
+}
+.at-checkbox::after {
+  display: none !important;
+}
+.at-checkbox__option {
+  padding-left: 0 !important;
+}
+.at-checkbox__option_wrap {
+  padding: 12px 0 !important;
+  background-color: #fff !important;
+}
+.at-checkbox__title {
+  font-size: 24px !important;
+}

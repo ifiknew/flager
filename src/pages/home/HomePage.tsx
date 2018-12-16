@@ -5,24 +5,8 @@ import { AtSearchBar, AtTabs, AtTabsPane } from 'taro-ui'
 import './HomePage.scss'
 import FlagList from '../flag/FlagList';
 import Mock from 'mockjs'
+import API from '../../utils/API';
 
-const LIST:Array<App.Flag> = Mock.mock({
-  'list|1-10': [{
-    'id|+1': 1,
-    title: /[a-z ]{1,20}/,
-    content: /[a-z ]{1,200}/,
-
-    'userId|+1': 2,
-    userName: /[a-z ]{1,20}/,
-    userAvatar: '',
-
-    timestamp: new Date().valueOf(),
-    'taskList|0-10': [{
-      name: /[a-z ]{1,20}/,
-      'checked|1': true
-    }]
-  }]
-}).list
 class HomePage extends Component {
   state = {
     searchKey: '',
@@ -60,21 +44,26 @@ class HomePage extends Component {
             onClick={this.handleChangeTab}
           >
             <AtTabsPane current={this.state.activeTabIndex} index={0}>
-              <FlagList data={LIST}/>
+              <FlagList type="followed"/>
             </AtTabsPane>
             <AtTabsPane current={this.state.activeTabIndex} index={1}>
-              <FlagList data={LIST}/>
+              <FlagList type="popular"/>
             </AtTabsPane>
             <AtTabsPane current={this.state.activeTabIndex} index={2}>
-              <FlagList data={LIST}/>
+              <FlagList type="praised"/>
             </AtTabsPane>
             <AtTabsPane current={this.state.activeTabIndex} index={3}>
-              <FlagList data={LIST}/>
+              <FlagList type="joined"/>
             </AtTabsPane>
             <AtTabsPane current={this.state.activeTabIndex} index={4}>
-              <FlagList data={LIST}/>
+              <FlagList type="my"/>
             </AtTabsPane>
           </AtTabs>
+          {this.state.searchKey && (
+            <View className="searchView">
+              <FlagList type="search/title" keyword={this.state.searchKey}/>
+            </View>
+          )}
         </View>
       </View>
     )

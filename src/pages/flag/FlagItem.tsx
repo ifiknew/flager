@@ -18,7 +18,7 @@ class FlagItem extends Component<FlagItemProps> {
     } else {
       if (this.props.disableNavigation !== true) {
         Taro.navigateTo({
-          url: '/pages/flag/FlagPage'
+          url: '/pages/flag/FlagPage?id='+this.props.data.id
         })
       }
     }
@@ -40,16 +40,9 @@ class FlagItem extends Component<FlagItemProps> {
               <View className="headline">
                   <AtAvatar circle image={data.userAvatar} size="small" />
                   <View className="info">
-                    <Text>{data.userName}</Text>
+                    <Text>{data.title}</Text>
                     <Text className="time">
-                    {new Intl.DateTimeFormat(
-                      'zh-CN', 
-                      {
-                        month: '2-digit', day: '2-digit',
-                        hour: '2-digit', minute: '2-digit',
-                        hour12: false,
-                      }
-                    ).format(new Date(data.timestamp))}
+                      {`${data.userName || ''} 立于 ${data.createTimeStr}`}
                     </Text>
                   </View>
               </View>
@@ -78,16 +71,9 @@ class FlagItem extends Component<FlagItemProps> {
     
             <View className="right">
               <View className="headline inline">
-                <Text>{data.userName}</Text>
+                <Text>{data.title}</Text>
                 <Text className="time">
-                {new Intl.DateTimeFormat(
-                  'zh-CN', 
-                  {
-                    month: '2-digit', day: '2-digit',
-                    hour: '2-digit', minute: '2-digit',
-                    hour12: false,
-                  }
-                ).format(new Date(data.timestamp))}
+                  {data.createTimeStr}
                 </Text>
               </View>
               <View className="content">

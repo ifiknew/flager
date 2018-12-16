@@ -4,6 +4,7 @@ import { View, Image } from '@tarojs/components'
 import { AtButton, AtAvatar } from 'taro-ui'
 import './LoginPage.scss'
 import FlagImage from './flag.png'
+import API from '../../utils/API';
 class LoginPage extends Component {
 
   config: Config = {
@@ -33,11 +34,30 @@ class LoginPage extends Component {
       avatarUrl
     } = e.detail.userInfo
     console.log(e)
-    Taro.setStorageSync('nickName', nickName)
-    Taro.setStorageSync('avatarUrl', avatarUrl)
-    Taro.navigateTo({
-      url: '/pages/index/index'
+    Taro.login().then(codeInfo => {
+      console.log(codeInfo)
+      if (codeInfo.code) {
+        API.query({
+          url: '/user/login',
+          option: {
+            method: 'POST',
+            data: {
+              code: codeInfo.code,
+              userName: nickName,
+              avatar: avatarUrl,
+            }
+          }
+        }).then(res => {
+          Taro.setStorageSync('userId', res.data.userId)
+          Taro.setStorageSync('nickName', nickName)
+          Taro.setStorageSync('avatarUrl', avatarUrl)
+          Taro.navigateTo({
+            url: '/pages/index/index'
+          })
+        })
+      }
     })
+
   }
 
   render () {

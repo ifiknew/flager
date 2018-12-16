@@ -5,11 +5,14 @@ import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { add, minus, asyncAdd } from '../../actions/counter'
 
-import { AtAvatar, AtTabBar } from 'taro-ui'
+import { AtAvatar, AtTabBar, AtIcon } from 'taro-ui'
 
 
 import './index.scss'
 import HomePage from '../home/HomePage';
+
+import API from '../../utils/API'
+import CreateFlagModal from '../flag/CreateFlagModal';
 
 type PageStateProps = {
   counter: {
@@ -61,6 +64,7 @@ class Index extends Component {
     current: 0,
     avatar: '',
     userName: '',
+    showModal: false
   }
   componentDidMount() {
     
@@ -86,6 +90,10 @@ class Index extends Component {
     this.setState({ current })
   }
 
+  handleShowModal = () => {
+    this.setState({ showModal: !this.state.showModal })
+  }
+
   render () {
     return (
       <View className='Index'>
@@ -108,6 +116,12 @@ class Index extends Component {
           onClick={this.handleClick}
           current={this.state.current}
         />
+        {(this.state.current === 0) && (
+          <View className="addIconWrapper" style={{ height: 56, width: 56 }} onClick={this.handleShowModal}><AtIcon value='add' size='30' color='#fff'></AtIcon></View>
+        )}
+        {this.state.showModal && (
+          <CreateFlagModal onHide={this.handleShowModal}/>
+        )}
       </View>
     )
   }

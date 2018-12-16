@@ -5,7 +5,8 @@ import { AtSearchBar, AtTabs, AtTabsPane, AtButton, AtAvatar, AtIcon } from 'tar
 import './FlagPage.scss'
 import FlagItem from './FlagItem';
 import Mock from 'mockjs'
-
+import API from '../../utils/API';
+import Parser from '../../utils/Parser';
 const LIST:Array<App.Flag> = Mock.mock({
   'list|1-10': [{
     'id|+1': 1,
@@ -32,8 +33,33 @@ class FlagPage extends Component {
   state = {
     searchKey: '',
     activeTabIndex: 0,
-    activeCommentId: -1,
+    activeCommentId: '',
     comment: '',
+    data: undefined as App.Flag | undefined
+  }
+
+  componentDidMount() {
+    const pages = Taro.getCurrentPages()
+    const cur = pages[pages.length - 1]
+    const id = cur.options.id
+
+    API.query({
+      url: '/flag/detail',
+      searchParams: {
+        flagId: id
+      },
+      option: {
+        method: 'GET',
+      }
+    }).then(res => {
+      this.setState({
+        data: {
+          ...res.data,
+          ...Parser.parseDescription(res.data.description),
+          createTimeStr: Parser.parseTimeAndFormat(res.data.createTime)
+        }
+      })
+    })
   }
 
   handleChangeTab = (activeTabIndex) => this.setState({ activeTabIndex })
@@ -46,7 +72,8 @@ class FlagPage extends Component {
     
   }
   render() {
-    const data = LIST[0]
+    const data = this.state.data
+    if (data == null) { return null }
     return (
       <View className="FlagPage">
         <View className="content">
@@ -65,8 +92,8 @@ class FlagPage extends Component {
           >
             <AtTabsPane current={this.state.activeTabIndex} index={0}>
               <View className='Timeline'>
-                {data.taskList != null && data.taskList.map((v, index) => {
-                  const isCurrent = v.checked === false && (index === 0 || data.taskList[index-1].checked === true) 
+                {data.tasks != null && data.tasks.map((v, index) => {
+                  const isCurrent = v.checked === false && (index === 0 || data.tasks[index-1].checked === true) 
                   return (
                     <View className="item">
                       <View className="left">
