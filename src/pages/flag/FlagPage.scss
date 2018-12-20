@@ -37,7 +37,10 @@ page,
 
     }
     .buttonWrapper {
-      flex: 0 0;
+      display: flex;
+      .at-button {
+        margin-left: 12px;
+      }
     }
   }
 }
@@ -60,4 +63,36 @@ page,
   left: 0;
   width: 100%;
   at-search-bar at-icon { display: none; }
+}
+
+.at-input__children::after {
+  border: none !important;
+}
+.at-checkbox::after {
+  display: none !important;
+}
+.at-checkbox__option {
+  padding-left: 0 !important;
+}
+.at-checkbox__option_wrap {
+  padding: 12px 0 !important;
+  background-color: #fff !important;
+}
+.at-checkbox__title {
+  font-size: 24px !important;
+}
+.at-action-sheet-item, .at-action-sheet-footer {
+  font-size: 28px !important;
+}
+
+at-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.at-button--small {
+  height:48rpx !important;
+  font-size:24rpx !important;
+  line-height:46rpx !important;
+
 }

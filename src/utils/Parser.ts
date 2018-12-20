@@ -4,7 +4,7 @@ const Parser = {
       const json = JSON.parse(des)
       return {
         content: json.content || '',
-        tasks: json.tasks || []
+        tasks: json.tasks || json.taskList || []
       }
     } catch (error) {
       return {

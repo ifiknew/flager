@@ -43,12 +43,12 @@ class LoginPage extends Component {
             method: 'POST',
             data: {
               code: codeInfo.code,
-              userName: nickName,
+              username: nickName,
               avatar: avatarUrl,
             }
           }
         }).then(res => {
-          Taro.setStorageSync('userId', res.data.userId)
+          Taro.setStorageSync('userId', res.data.id)
           Taro.setStorageSync('nickName', nickName)
           Taro.setStorageSync('avatarUrl', avatarUrl)
           Taro.navigateTo({

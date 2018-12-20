@@ -21,7 +21,7 @@ const API = {
         .join('&')
     }
     const defaultHeaders = {
-      'F-B-UserId': 'xuan'
+      'F-B-UserId': Taro.getStorageSync('userId')
     }
     
     return Taro.request({
@@ -37,11 +37,17 @@ const API = {
       dataType: 'json',
     }).then(res => {
       if (res.statusCode == 200 && success) {
-        (Taro as any).atMessage({
-          message: success,
-          type: 'success',
+        Taro.showToast({
+          icon: 'success',
+          title: success,
           duration: 1000
         })
+      } else {
+        // message({
+        //   message: '服务器错误',
+        //   type: 'error',
+        //   duration: 1000
+        // })
       }
       return res
     })

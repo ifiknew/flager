@@ -12,11 +12,11 @@ class HomePage extends Component {
     searchKey: '',
     activeTabIndex: 1
   }
-
+  sl: any = null
   handleChangeSearchKey = (searchKey) => this.setState({ searchKey })
 
   handleSearch = () => {
-
+    this.sl.fetchList(0)
   }
 
   handleChangeTab = (activeTabIndex) => this.setState({ activeTabIndex })
@@ -61,7 +61,7 @@ class HomePage extends Component {
           </AtTabs>
           {this.state.searchKey && (
             <View className="searchView">
-              <FlagList type="search/title" keyword={this.state.searchKey}/>
+              <FlagList type="search/title" keyword={this.state.searchKey} ref={el => this.sl = el}/>
             </View>
           )}
         </View>

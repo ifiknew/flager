@@ -4,15 +4,27 @@ import { View } from '@tarojs/components'
 import { AtIcon, AtInput, AtTextarea, AtCheckbox } from 'taro-ui'
 import API from '../../utils/API';
 export interface CreateFlagModalProps {
-  onHide: () => void
+  onHide: () => void,
+  flag?: App.Flag
 }
 
 export default class CreateFlagModal extends Component<CreateFlagModalProps, any> {
   state = {
     title: '',
     content: '',
-    taskList: [] as Array<string>,
+    taskList: [] as Array<{ name: string, status: number }>,
     attend: []
+  }
+  componentDidMount() {
+    const { flag } = this.props
+    if (flag != null) {
+      this.setState({
+        title: flag.title,
+        content: flag.content,
+        taskList: flag.tasks,
+        attend: [flag.isPermitJoin]
+      })
+    }
   }
   handleChangeTitle = (title) => {
     this.setState({ title })
@@ -22,12 +34,12 @@ export default class CreateFlagModal extends Component<CreateFlagModalProps, any
   }
   handleChangeTask = (index, task) => {
     this.setState({
-      taskList: this.state.taskList.map((v,i) => i !== index ? v : task)
+      taskList: this.state.taskList.map((v,i) => i !== index ? v : { name: task, status: v.status })
     })
   }
   handleAddTask = () => {
     this.setState({
-      taskList: [...this.state.taskList, '']
+      taskList: [...this.state.taskList, { name: '', status: 0 }]
     })
   }
   handleDeleteTask = (index) => {
@@ -41,14 +53,15 @@ export default class CreateFlagModal extends Component<CreateFlagModalProps, any
     })
   }
   handleSubmit = () => {
+    const { flag } = this.props
     API.query({
-      url: '/flag/create' ,
+      url: flag == null ? '/flag/create' : '/flag/save/'+flag.id,
       option: {
         method: 'POST',
         data: {
           description: JSON.stringify({
             content: this.state.content,
-            taskList: this.state.taskList.map(v => ({ name: v, checked: false }))
+            tasks: this.state.taskList
           }),
           isPermitJoin: this.state.attend.some(Boolean),
           title: this.state.title,
@@ -69,10 +82,11 @@ export default class CreateFlagModal extends Component<CreateFlagModalProps, any
     e.stopPropagation()
   }
   public render() {
+    const { flag } = this.props
     return (
       <View className="CreateFlagModalWrapper" onClick={this.props.onHide}>
         <View className="CreateFlagModal" onClick={this.prevent}>
-          <View className="header">立个Flag</View>
+          <View className="header">{flag ? '修改' : '立个'}Flag</View>
           <View className="body">
             <View className="title">标题</View>
             <AtInput
@@ -106,14 +120,17 @@ export default class CreateFlagModal extends Component<CreateFlagModalProps, any
                   <AtInput
                     name={`task${v}`}
                     type='text'
-                    placeholder={`任务${index+1}内容...`}
-                    value={v}
+                    placeholder={v.name ? '' : `任务${index+1}内容...`}
+                    value={v.name}
                     onChange={this.handleChangeTask.bind(this, index)}
                     customStyle={{
                       padding: '0'
                     }}
+                    disabled={this.props.flag && v.status != 0}
                   >
-                    <AtIcon value='close-circle' size='16' color='#ccc' onClick={this.handleDeleteTask.bind(this, index)}></AtIcon>
+                    {!(this.props.flag && v.status != 0) && (
+                      <AtIcon value='close-circle' size='16' color='#ccc' onClick={this.handleDeleteTask.bind(this, index)}></AtIcon>
+                    )}
                   </AtInput>
                 </View>
               ))}
@@ -123,7 +140,7 @@ export default class CreateFlagModal extends Component<CreateFlagModalProps, any
           </View>
           <View className="footer">
             <View className="cancelButton" onClick={this.props.onHide}>放弃</View>
-            <View className="confirmButton" onClick={this.handleSubmit}>宣誓</View>
+            <View className="confirmButton" onClick={this.handleSubmit}>{flag? '重新宣誓' : '宣誓'}</View>
           </View>
         </View>
       </View>

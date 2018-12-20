@@ -4,26 +4,10 @@ import { View } from '@tarojs/components'
 import { AtSearchBar, AtTabs, AtTabsPane, AtButton, AtAvatar, AtIcon } from 'taro-ui'
 import './FlagPage.scss'
 import FlagItem from './FlagItem';
-import Mock from 'mockjs'
 import API from '../../utils/API';
 import Parser from '../../utils/Parser';
-const LIST:Array<App.Flag> = Mock.mock({
-  'list|1-10': [{
-    'id|+1': 1,
-    title: /[a-z ]{1,20}/,
-    content: /[a-z ]{1,200}/,
+import { func } from 'prop-types';
 
-    'userId|+1': 2,
-    userName: /[a-z ]{1,20}/,
-    userAvatar: '',
-
-    timestamp: new Date().valueOf(),
-    'taskList|0-10': [{
-      name: /[a-z ]{1,20}/,
-      'checked|1': true
-    }]
-  }]
-}).list
 class FlagPage extends Component {
 
   config: Config = {
@@ -35,19 +19,24 @@ class FlagPage extends Component {
     activeTabIndex: 0,
     activeCommentId: '',
     comment: '',
-    data: undefined as App.Flag | undefined
+
+    data: undefined as App.Flag | undefined,
+    members: [] as App.Member[],
+    comments: [] as App.Flag[]
   }
 
   componentDidMount() {
-    const pages = Taro.getCurrentPages()
-    const cur = pages[pages.length - 1]
-    const id = cur.options.id
+
+    this.fetchDetail()
+    this.fetchMember()
+    this.fetchComment()
+  }
+
+  fetchDetail = () => {
+    const id = this.getId()
 
     API.query({
-      url: '/flag/detail',
-      searchParams: {
-        flagId: id
-      },
+      url: '/flag/detail/'+id,
       option: {
         method: 'GET',
       }
@@ -62,6 +51,42 @@ class FlagPage extends Component {
     })
   }
 
+  fetchMember = () => {
+    const id = this.getId()
+    API.query({
+      url: '/member/list/'+id,
+      option: {
+        method: 'POST',
+        data: {
+          pageNumber: 0,
+          pageSize: 99
+        } 
+      }
+    }).then(res => {
+      this.setState({
+        members: res.data.content
+      })
+    })
+  }
+
+  fetchComment = () => {
+    const id = this.getId()
+    API.query({
+      url: '/comment/list/'+id,
+      option: {
+        method: 'POST',
+        data: {
+          pageNumber: 0,
+          pageSize: 99
+        } 
+      }
+    }).then(res => {
+      this.setState({
+        comments: res.data.content
+      })
+    })
+  }
+
   handleChangeTab = (activeTabIndex) => this.setState({ activeTabIndex })
 
   handleClickComment = (data: App.Flag) => this.setState({ activeCommentId: this.state.activeCommentId != data.id ? data.id : -1 })
@@ -69,7 +94,51 @@ class FlagPage extends Component {
   handleChangeComment = (comment: string) => this.setState({ comment })
   
   handleSubmitComment = () => {
-    
+    const id = this.getId()
+    API.query({
+      url: '/comment/add/'+id,
+      option: {
+        method: 'POST',
+        data: {
+          content: this.state.comment
+        },
+      },
+    }).then(res => {
+      this.setState({ comment: '' })
+      this.fetchComment()
+    })
+  }
+
+  handleFinishTask = (index: number, status) => {
+    const id = this.getId()
+    const { data }  = this.state
+    API.query({
+      url: '/flag/save/'+id,
+      option: {
+        method: 'POST',
+        data: {
+          description: JSON.stringify({
+            content: this.state.data!.content,
+            tasks: this.state.data!.tasks.map((v, i) => i != index ? v : ({
+              ...v,
+              status
+            }))
+          }),
+          title: data!.title,
+          isPermitJoin: data!.isPermitJoin,
+          type: 0
+        },
+      },
+      success: '',
+    }).then(res => {
+      this.fetchDetail()
+    })
+  } 
+  getId = () => {
+    const pages = Taro.getCurrentPages()
+    const cur = pages[pages.length - 1]
+    const id = cur.options.id
+    return id
   }
   render() {
     const data = this.state.data
@@ -77,7 +146,7 @@ class FlagPage extends Component {
     return (
       <View className="FlagPage">
         <View className="content">
-          <FlagItem data={data} disableNavigation disableInline/>
+          <FlagItem data={data} onUpdate={this.fetchDetail} disableNavigation disableInline/>
         </View>
         <View className="menu">
           <AtTabs
@@ -93,15 +162,17 @@ class FlagPage extends Component {
             <AtTabsPane current={this.state.activeTabIndex} index={0}>
               <View className='Timeline'>
                 {data.tasks != null && data.tasks.map((v, index) => {
-                  const isCurrent = v.checked === false && (index === 0 || data.tasks[index-1].checked === true) 
                   return (
                     <View className="item">
                       <View className="left">
-                        <View className="icon" style={{ backgroundColor: isCurrent ? '#79a1eb' : v.checked ? '#6ecaa6' : '#dfdfdf' }}>{v.checked ? <AtIcon value='check' size='16' color='#fff' /> : index+1}</View>
-                        <View className="name" style={isCurrent === false ? { color: '#ccc' } : {}}>{v.name}</View>
+                        <View className="icon" style={{ backgroundColor: v.status == 1 ? '#dfdfdf' : '#6190E8' }}>
+                          {v.status == 2 ? <AtIcon value='check' size='16' color='#fff' /> : index+1}
+                        </View>
+                        <View className="name" style={v.status != 0 ? { color: '#aaa' } : {}}>{v.name}</View>
                       </View>
                       <View className="buttonWrapper">
-                        {isCurrent && <AtButton type='secondary' size='small' >完成</AtButton>}
+                        {v.status == 0 && <AtButton type='secondary' size='small' circle onClick={this.handleFinishTask.bind(this, index, 2)}>完成</AtButton>}
+                        {v.status == 0 && <AtButton type='secondary' size='small' circle onClick={this.handleFinishTask.bind(this, index, 1)}>失败</AtButton>}
                       </View>
                     </View>
                   )
@@ -110,19 +181,31 @@ class FlagPage extends Component {
             </AtTabsPane>
             <AtTabsPane current={this.state.activeTabIndex} index={1}>
               <View className="AvatarGroup">
-                {LIST.map(v => (
+                {this.state.members.map(v => (
                   <View className="item">
-                    <AtAvatar image={v.userAvatar} circle size="small"/>
-                    <View>{v.userName}</View>
+                    <AtAvatar image={v.avatar} circle size="small"/>
+                    <View>{v.username}</View>
                   </View>
                 ))}
               </View>
             </AtTabsPane>
             <AtTabsPane current={this.state.activeTabIndex} index={2}>
               <View className="CommentGroup">
-                {LIST.map(v => (
+                {this.state.comments
+                  .map(v => ({
+                    ...v,
+                    createTimeStr: Parser.parseTimeAndFormat(v.commentTime),
+                    title: v.creator.username
+                  }))
+                  .map(v => (
                     <View className="item">
-                      <FlagItem data={v} onClick={this.handleClickComment} active={this.state.activeCommentId == v.id}/>
+                      <FlagItem 
+                        data={v} 
+                        onClick={this.handleClickComment} 
+                        active={this.state.activeCommentId == v.id}
+                        onUpdate={this.fetchComment}
+                        flag={data}
+                      />
                     </View>
                 ))}
               </View>

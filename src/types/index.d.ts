@@ -2,7 +2,7 @@ declare namespace App {
 
   interface Flag {
     id: string
-    
+    flagId: string
     title: string
 
     content: string
@@ -10,22 +10,33 @@ declare namespace App {
 
     createTime: number
     createTimeStr: string
+    finishTime: any
+    
+    isCreator: boolean,
+    isFollow: boolean,
+    isJoin: boolean,
+    isPermitJoin: boolean,
+    isPraise: boolean,
+    
+    status: number
 
+    creator: {
+      id: string,
+      username: string,
+      avatar: string
+    }
 
-
-    userId: number
-    userName: string
-    userAvatar: string
-
-    timestamp: number
-
-    taskList: Array<Task>
+    commentTime: string
     
   }
 
   interface Task {
     id: number
     name: string
-    checked: boolean
+    status: number
+  }
+  interface Member {
+    username: string,
+    avatar: string
   }
 }
